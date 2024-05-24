@@ -10,7 +10,6 @@ COPY ./app /app/app
 COPY ./scripts app/scripts
 COPY ./main.py /app
 COPY ./README.md /app
-COPY ./.env /app
 
 # 작업시 /app 이 자동으로 붙는다
 WORKDIR /app
