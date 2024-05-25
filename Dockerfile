@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 COPY ./poetry.lock app/poetry.lock
 COPY ./pyproject.toml app/pyproject.toml
 COPY ./app /app/app
-COPY ./scripts app/scripts
+COPY ./scripts/run.sh /app/scripts/run.sh
 COPY ./main.py /app
 COPY ./README.md /app
 
@@ -25,12 +25,12 @@ RUN python -m pip install --upgrade pip && \
         poetry install --with dev ; \
     fi && \
     poetry install --without dev && \
-    adduser \
-        --disabled-password \
-        --no-create-home \
-        admin && \
+#    adduser \
+#        --disabled-password \
+#        --no-create-home \
+#        admin && \
     mkdir -p /vol/web && \
-    chown -R admin:admin /vol/ && \
+#    chown -R admin:admin /vol/ && \
     chmod -R 755 /vol/web && \
     chmod -R +x /app/scripts && \
     chmod -R 777 /app/app
@@ -38,6 +38,6 @@ RUN python -m pip install --upgrade pip && \
 ENV VIRTUAL_ENV=/app/.venv
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-USER admin
+USER root
 
 CMD ["sh", "scripts/run.sh"]

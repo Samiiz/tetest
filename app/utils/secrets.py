@@ -15,22 +15,17 @@ def get_secret():
 
     # Create a Secrets Manager client
     session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=region_name
-    )
+    client = session.client(service_name="secretsmanager", region_name=region_name)
 
     try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
-        secret = get_secret_value_response['SecretString']
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        secret = get_secret_value_response["SecretString"]
         return orjson.loads(secret)
 
     except NoCredentialsError:
         raise "Credentials not available"
     except ClientError as e:
-        if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        if e.response["Error"]["Code"] == "ResourceNotFoundException":
             raise "The requested secret was not found"
         else:
             raise {"Error occurred: ", e}
@@ -40,4 +35,3 @@ if __name__ == "__main__":
     get_secret()
 
     # Your code goes here.
-
