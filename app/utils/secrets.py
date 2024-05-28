@@ -8,7 +8,7 @@ import orjson
 from botocore.exceptions import ClientError, NoCredentialsError
 
 
-def get_secret():
+def get_secret() -> dict[str, str]:
 
     secret_name = "mpg/secrets/env"
     region_name = "ap-northeast-2"
@@ -20,6 +20,7 @@ def get_secret():
     try:
         get_secret_value_response = client.get_secret_value(SecretId=secret_name)
         secret = get_secret_value_response["SecretString"]
+        print(type(orjson.loads(secret)))
         return orjson.loads(secret)
 
     except NoCredentialsError:

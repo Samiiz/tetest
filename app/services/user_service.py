@@ -45,6 +45,9 @@ def generate_verification_code() -> int:
 
 
 async def send_verification_email(request_data: SendVerificationCodeResponse) -> dict[str, str]:
+    redis.set("asd", "asd")
+    asd = redis.get("asd")
+    print(asd)
     try:
         if not is_valid_email(request_data.email):
             raise HTTPException(status_code=400, detail="Invalid email")
@@ -91,7 +94,7 @@ async def send_verification_email(request_data: SendVerificationCodeResponse) ->
             await redis.set(
                 request_data.email, orjson.dumps({"email": request_data.email, "code": str(verification_code)})
             )
-            await redis.expire(request_data.email, 60)
+            await redis.expire(request_data.email, settings.redis_ttl)
         else:
             code = orjson.loads(result)["code"]
 
@@ -100,7 +103,7 @@ async def send_verification_email(request_data: SendVerificationCodeResponse) ->
                 await redis.set(
                     request_data.email, orjson.dumps({"email": request_data.email, "code": str(verification_code)})
                 )
-                await redis.expire(request_data.email, 60)
+                await redis.expire(request_data.email, settings.redis_ttl)
 
         server.sendmail(settings.GMAIL_USERNAME, request_data.email, msg.as_string())
         server.close()
